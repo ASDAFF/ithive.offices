@@ -1,7 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
-if(!ereg("(.*),(.*)", $arParams["ICON_SIZE"])) $arParams["ICON_SIZE"] = '46,31';
-if(!ereg("(.*),(.*)", $arParams["ICON_OFFSET"])) $arParams["ICON_OFFSET"] = '-15,-30';
+if(!preg_match("(.*),(.*)", $arParams["ICON_SIZE"])) $arParams["ICON_SIZE"] = '46,31';
+if(!preg_match("(.*),(.*)", $arParams["ICON_OFFSET"])) $arParams["ICON_OFFSET"] = '-15,-30';
 
 if($arParams["INCLUDE_JQUERY"])
 $APPLICATION->AddHeadString('
@@ -18,21 +18,21 @@ $APPLICATION->AddHeadString('
 ');?>
 
 <script type="text/javascript">
-// РЎРѕР·РґР°РЅРёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° РґР»СЏ СЃРѕР±С‹С‚РёСЏ window.onLoad
+// Создание обработчика для события window.onLoad
 YMaps.jQuery(function () {
-	// РЎРѕР·РґР°РЅРёРµ СЌРєР·РµРјРїР»СЏСЂР° РєР°СЂС‚С‹ Рё РµРіРѕ РїСЂРёРІСЏР·РєР° Рє СЃРѕР·РґР°РЅРЅРѕРјСѓ РєРѕРЅС‚РµР№РЅРµСЂСѓ
+	// Создание экземпляра карты и его привязка к созданному контейнеру
 	var map = new YMaps.Map(YMaps.jQuery("#YMapsID")[0]);
 
-	// РЈСЃС‚Р°РЅРѕРІРєР° РґР»СЏ РєР°СЂС‚С‹ РµРµ С†РµРЅС‚СЂР° Рё РјР°СЃС€С‚Р°Р±Р°
-	map.setCenter(new YMaps.GeoPoint(58.746114,60.223949), 3); // РїРѕС‡С‚Рё РІСЃСЏ Р РѕСЃСЃРёСЏ Р±РµР· РґР°Р»СЊРЅРµРіРѕ РІРѕСЃС‚РѕРєР°
+	// Установка для карты ее центра и масштаба
+	map.setCenter(new YMaps.GeoPoint(58.746114,60.223949), 3); // почти вся Россия без дальнего востока
 //	map.setCenter(new YMaps.GeoPoint(<?list($lon,$lat)=explode(",",$arResult["ITEMS"][0]["PROPERTIES"]["YMAP_POINT"]["VALUE"]); echo $lat.",".$lon?>), 10);
 
 	var toolbar = new YMaps.ToolBar([new YMaps.ToolBar.MoveButton(), new YMaps.ToolBar.MagnifierButton(), new YMaps.ToolBar.RulerButton()]);
 
-	if (YMaps.location) {	// Р•СЃР»Рё РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ
+	if (YMaps.location) {	// Если местоположение пользователя удалось определить
 		place = new YMaps.GeoPoint(YMaps.location.longitude, YMaps.location.latitude);
 
-		// РЎРѕР·РґР°РЅРёРµ РєРЅРѕРїРєРё РїРѕРєР°Р·Р°С‚СЊ РІСЃРµ РјР°РіР°Р·РёРЅС‹
+		// Создание кнопки показать все магазины
 		var button_show_myplace = new YMaps.ToolBarButton({ 
 			caption: "<?=GetMessage("ITHIVE_OFFICES_MY_LOCATION")?>", 
 			hint: "<?=GetMessage("ITHIVE_OFFICES_SHOW_YOUR_LOCATION")?>"
@@ -40,7 +40,7 @@ YMaps.jQuery(function () {
 		
 		var zoom = 10;
 
-		// РџСЂРё С‰РµР»С‡РєРµ РЅР° РєРЅРѕРїРєРµ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ РЅРѕРІР°СЏ РєРЅРѕРїРєР°
+		// При щелчке на кнопке добавляется новая кнопка
 		YMaps.Events.observe(button_show_myplace, button_show_myplace.Events.Click, function () {
 			map.closeBalloon();
 			if (YMaps.location.zoom) {
@@ -54,39 +54,39 @@ YMaps.jQuery(function () {
 			)
 		}, map);
 
-		// Р”РѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё РЅР° РїР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ
+		// Добавление кнопки на панель инструментов
 		toolbar.add(button_show_myplace);
 	}
 
-	// РЎРѕР·РґР°РЅРёРµ РєРЅРѕРїРєРё "Р’СЃСЏ РєР°СЂС‚Р°"
+	// Создание кнопки "Вся карта"
 	var button_show_all = new YMaps.ToolBarButton({ 
 		caption: "<?=GetMessage("ITHIVE_OFFICES_ENTIRE_MAP")?>", 
 		hint: "<?=GetMessage("ITHIVE_OFFICES_SHOW_ALL_SHOPS")?>"
 	});
 
-	// РџСЂРё С‰РµР»С‡РєРµ РЅР° РєРЅРѕРїРєРµ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РёСЃС…РѕРґРЅС‹Р№ С†РµРЅС‚СЂ Рё РјР°СЃС€С‚Р°Р±
+	// При щелчке на кнопке устанавливается исходный центр и масштаб
 	YMaps.Events.observe(button_show_all, button_show_all.Events.Click, function () {
 		map.closeBalloon();
 		map.setCenter(new YMaps.GeoPoint(58.746114,60.223949), 3);
 	}, map);
 
-	// Р”РѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё "Р’СЃСЏ РєР°СЂС‚Р°" РЅР° РїР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ
+	// Добавление кнопки "Вся карта" на панель инструментов
 	toolbar.add(button_show_all);
 
-	// Р”РѕР±Р°РІР»РµРЅРёРµ РїР°РЅРµР»Рё РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ РЅР° РєР°СЂС‚Сѓ
+	// Добавление панели инструментов на карту
 	map.addControl(toolbar);
 
-	// РЎРѕР·РґР°РµРј СЃС‚РёР»СЊ
+	// Создаем стиль
 	var pin = new YMaps.Style();
 
-	// РЎРѕР·РґР°РµРј СЃС‚РёР»СЊ Р·РЅР°С‡РєР° РјРµС‚РєРё
+	// Создаем стиль значка метки
 	pin.iconStyle = new YMaps.IconStyle();
 	pin.iconStyle.href = "<?=$arParams["ICON_FILE"]?>";
 
 	pin.iconStyle.size = new YMaps.Point(<?=$arParams["ICON_SIZE"]?>);
 	pin.iconStyle.offset = new YMaps.Point(<?=$arParams["ICON_OFFSET"]?>);
 
-	// РЎРѕР·РґР°РЅРёРµ РіСЂСѓРїРїС‹ РѕР±СЉРµРєС‚РѕРІ Рё РґРѕР±Р°РІР»РµРЅРёРµ РµРµ РЅР° РєР°СЂС‚Сѓ
+	// Создание группы объектов и добавление ее на карту
 	var group = new YMaps.GeoObjectCollection(pin);
 //	map.addControl(new YMaps.TypeControl());
 	map.addControl(new YMaps.Zoom());	
@@ -109,11 +109,11 @@ $row++;
 
 	map.addOverlay(group);
 
-	// РЎРѕР·РґР°РЅРёРµ СѓРїСЂР°РІР»СЏСЋС‰РµРіРѕ СЌР»РµРјРµРЅС‚Р° "РџСѓС‚РµРІРѕРґРёС‚РµР»СЊ РїРѕ РѕС„РёСЃР°Рј"
+	// Создание управляющего элемента "Путеводитель по офисам"
 	map.addControl(new OfficeNavigator(group));
 });
 
-// Р¤СѓРЅРєРёСЏ СЃРѕР·РґР°РЅРёСЏ РјРµС‚РєРё
+// Функия создания метки
 function createPlacemark (geoPoint, name, description, adress, phone, www, detailUrl, id, email) {
 	var placemark = new YMaps.Placemark(geoPoint);
 	placemark.name = name;
@@ -128,16 +128,16 @@ function createPlacemark (geoPoint, name, description, adress, phone, www, detai
 	return placemark;
 }
 
-// РЈРїСЂР°РІР»СЏСЋС‰РёР№ СЌР»РµРјРµРЅС‚ "РџСѓС‚РµРІРѕРґРёС‚РµР»СЊ РїРѕ РѕС„РёСЃР°Рј", СЂРµР°Р»РёР·РёСѓРµС‚ РёРЅС‚РµСЂС„РµР№СЃ YMaps.IControl
+// Управляющий элемент "Путеводитель по офисам", реализиует интерфейс YMaps.IControl
 function OfficeNavigator (offices) {
-	// Р”РѕР±Р°РІР»РµРЅРёРµ РЅР° РєР°СЂС‚Сѓ
+	// Добавление на карту
 	this.onAddToMap = function (map, position) {
 			this.container = YMaps.jQuery(
 '			<div class="scrollable"><table class="odd_grey_body" id="shop_search_result_table"></table></div>');
 			this.map = map;
 			this.position = position || new YMaps.ControlPosition(YMaps.ControlPosition.TOP_RIGHT, new YMaps.Size(10, 10));
 
-			// Р’С‹СЃС‚Р°РІР»РµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјС‹С… CSS-СЃРІРѕР№СЃС‚РІ
+			// Выставление необходимых CSS-свойств
 /*			this.container.css({
 				position: "absolute",
 				zIndex: YMaps.ZIndex.CONTROL,
@@ -147,36 +147,36 @@ function OfficeNavigator (offices) {
 				margin: 0
 			});*/
 			
-			// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ СЃРїРёСЃРєР° РѕС„РёСЃРѕРІ
+			// Формирование списка офисов
 			this._generateList();
 			
-			// РџСЂРёРјРµРЅРµРЅРёРµ РїРѕР·РёС†РёРё Рє СѓРїСЂР°РІР»СЏСЋС‰РµРјСѓ СЌР»РµРјРµРЅС‚Сѓ
+			// Применение позиции к управляющему элементу
 			this.position.apply(this.container);
 			
-			// Р”РѕР±Р°РІР»РµРЅРёРµ РЅР° РєР°СЂС‚Сѓ
+			// Добавление на карту
 			this.container.appendTo("div.shop_search_result");
 	}
 
-	// РЈРґР°Р»РµРЅРёРµ СЃ РєР°СЂС‚С‹
+	// Удаление с карты
 	this.onRemoveFromMap = function () {
 		this.container.remove();
 		this.container = this.map = null;
 	};
 
-	// РџРѕРєР° "Р»РµС‚РёРј" РёРіРЅРѕСЂРёСЂСѓРµРј РєР»РёРєРё РїРѕ СЃСЃС‹Р»РєР°Рј
+	// Пока "летим" игнорируем клики по ссылкам
 	this.isFlying = 0;
 
-	// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ СЃРїРёСЃРєР° РѕС„РёСЃРѕРІ
+	// Формирование списка офисов
 	this._generateList = function () {
 		var _this = this;
 		
-		// Р”Р»СЏ РєР°Р¶РґРѕРіРѕ РѕР±СЉРµРєС‚Р° РІС‹Р·С‹РІР°РµРј С„СѓРЅРєС†РёСЋ-РѕР±СЂР°Р±РѕС‚С‡РёРє
+		// Для каждого объекта вызываем функцию-обработчик
 		offices.forEach(function (obj) {
-			// РЎРѕР·РґР°РЅРёРµ СЃСЃС‹Р»РєРё РЅР° РѕР±СЉРµРєС‚
+			// Создание ссылки на объект
 			var tr = YMaps.jQuery("<tr class='result_item'><?if(in_array("NAME_SHORT",$arParams["PROPERTY_CODE"])):?><td width='185'><?/*?><input type='hidden' id='hid_name' value='"+obj.name+"' /><input type='hidden' id='hid_id' value='"+obj.id+"' /><input type='hidden' id='hid_email' value='"+obj.email+"' /><?*/?>" + obj.name + "</td><?endif;if(in_array("ADDRESS",$arParams["PROPERTY_CODE"])):?><td>" + obj.adress + "</td><?endif;if(in_array("PHONES",$arParams["PROPERTY_CODE"])):?><td class='center' width='250'>" + obj.phone + "</td><?endif;if(in_array("WWW",$arParams["PROPERTY_CODE"])):?><td class='center' width='190'><a href='" + obj.www + "' target='_blank'>" + obj.www + "</a></td><?endif;?><?/*?><td class='center'><a class='send_mail' onclick='feedback_open($(this))' href='javascript:;'>&nbsp;</a></td><?*/?><?/*if(!$arParams["HIDE_LINK_WHEN_NO_DETAIL"] || ($arItem["DETAIL_TEXT"] && $arResult["USER_HAVE_ACCESS"])):?><td class='center'><a href='" + obj.detailUrl + "' target='_top'><?=GetMessage("ITHIVE_OFFICES_DETAIL")?></a></td><?endif;*/?></tr>"),
 				td = tr.find("td"); 
 			
-			// РЎРѕР·РґР°РЅРёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° С‰РµР»С‡РєР° РїРѕ СЃСЃС‹Р»РєРµ
+			// Создание обработчика щелчка по ссылке
 			tr.bind("click", function () {
 				if(!$(tr).hasClass("first"))
 				{
@@ -195,7 +195,7 @@ function OfficeNavigator (offices) {
 				}
 			});
 
-			// РЎР»СѓС€Р°С‚РµР»Рё СЃРѕР±С‹С‚РёР№ РЅР° РѕС‚РєСЂС‹С‚РёРµ Рё Р·Р°РєСЂС‹С‚РёРµ Р±Р°Р»СѓРЅР° Сѓ РѕР±СЉРµРєС‚Р°
+			// Слушатели событий на открытие и закрытие балуна у объекта
 			YMaps.Events.observe(obj, obj.Events.BalloonOpen, function () {
 					$(tr).addClass("selected");
 					$("div.YMaps-b-balloon-content > b").remove();
@@ -205,7 +205,7 @@ function OfficeNavigator (offices) {
 					$(tr).removeClass("selected");
 			});
 			
-			// Р”РѕР±Р°РІР»РµРЅРёРµ СЃСЃС‹Р»РєРё РЅР° РѕР±СЉРµРєС‚ РІ РѕР±С‰РёР№ СЃРїРёСЃРѕРє
+			// Добавление ссылки на объект в общий список
 			tr.appendTo(_this.container.find("#shop_search_result_table"));
 		});
 	};
