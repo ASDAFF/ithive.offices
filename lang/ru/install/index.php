@@ -1,5 +1,5 @@
 <?
-$MESS ['ITHIVE_COMPANY_NAME'] = "IT-Улей";
+$MESS ['ITHIVE_COMPANY_NAME'] = "NULLED";
 $MESS ['ITHIVE_INSTALL_NAME'] = "Модуль \"Офисы\" ";
 $MESS ['ITHIVE_INSTALL_DESCRIPTION'] = "Компонент вывода офисов/магазинов/подразделений на основе инфоблоков и карт Яндекс с поиском по региону и типу";
 

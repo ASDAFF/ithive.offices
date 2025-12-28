@@ -15,25 +15,24 @@ Class ithive_offices extends CModule
 	var $MODULE_GROUP_RIGHTS = "Y";
 
 
+    function __construct()
+    {
+        $arModuleVersion = array();
 
-	function ithive_offices()
-	{
-		$arModuleVersion = array();
+        $path = str_replace("\\", "/", __FILE__);
+        $path = substr($path, 0, strlen($path) - strlen("/index.php"));
 
-		$path = str_replace("\\", "/", __FILE__);
-		$path = substr($path, 0, strlen($path) - strlen("/index.php"));
+        include($path."/version.php");
 
-		include($path."/version.php");
+        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
+        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+        $this->PARTNER_NAME = GetMessage("ITHIVE_COMPANY_NAME");
+        $this->PARTNER_URI = "http://www.nulled.com/";
+        $this->MODULE_NAME = GetMessage("ITHIVE_INSTALL_NAME");
+        $this->MODULE_DESCRIPTION = GetMessage("ITHIVE_INSTALL_DESCRIPTION");
 
-		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
-		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-		$this->PARTNER_NAME = GetMessage("ITHIVE_COMPANY_NAME");
-		$this->PARTNER_URI = "http://www.nulled.com/";
-		$this->MODULE_NAME = GetMessage("ITHIVE_INSTALL_NAME");
-		$this->MODULE_DESCRIPTION = GetMessage("ITHIVE_INSTALL_DESCRIPTION");
-
-		return true;
-	}
+        return true;
+    }
 
 
 
