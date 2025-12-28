@@ -28,7 +28,7 @@ Class ithive_offices extends CModule
 		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
 		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 		$this->PARTNER_NAME = GetMessage("ITHIVE_COMPANY_NAME");
-		$this->PARTNER_URI = "http://www.it-hive.ru/";
+		$this->PARTNER_URI = "http://www.nulled.com/";
 		$this->MODULE_NAME = GetMessage("ITHIVE_INSTALL_NAME");
 		$this->MODULE_DESCRIPTION = GetMessage("ITHIVE_INSTALL_DESCRIPTION");
 
